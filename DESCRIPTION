@@ -1,11 +1,21 @@
 Package: tidyIFN
 Type: Package
-Title: Access and retrieve IFN data from CREAF/CTFC
+Title: Access and retrieve IFN data from CREAF/CTFC database
 Version: 0.0.0.9000
-Author: Who wrote it
+Authors@R: person("Granda", "Víctor", email = "victorgrandagarcia@gmail.com",
+                  role = c("aut", "cre"))
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: This package contains functions to allow access, visualization and
+    download of IFN data from the CREAF/CTFC databases.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports:
+    pool
+    Rpostgres
+    dbplyr
+    dplyr
+    stringr
+    purrr
+    ggplot2
+    tidyr
