@@ -32,20 +32,15 @@ ifn_connect <- function() {
 #' @export
 data_sig <- function(ifn, db = ifn_connect(), ...) {
 
-  # enquo the filters
-  dots <- dplyr::quos(...)
+  # dots
+  dots <- rlang::quos(..., .ignore_empty = 'all')
 
   # sig name
   name_sig <- glue::glue('parcela{ifn}_sig_etrs89')
 
   # sig data
-  res <- dplyr::tbl(db, name_sig)
-
-  # are there filters??
-  if (!rlang::is_empty(dots)) {
-    res <- res %>%
-      dplyr::filter(!!! dots)
-  }
+  res <- dplyr::tbl(db, name_sig) %>%
+    dplyr::filter(!!! dots)
 
   return(res)
 
@@ -65,8 +60,8 @@ data_sig <- function(ifn, db = ifn_connect(), ...) {
 #' @export
 data_clima <- function(data_sig, ifn, db = ifn_connect(), ...) {
 
-  # quos
-  dots <- dplyr::quos(...)
+  # dots
+  dots <- rlang::quos(..., .ignore_empty = 'all')
 
   # name
   clima_name <- glue::glue('parcela{ifn}_clima')
@@ -74,16 +69,12 @@ data_clima <- function(data_sig, ifn, db = ifn_connect(), ...) {
   # res
   res <- data_sig %>%
     dplyr::select(idparcela) %>%
-    dplyr::left_join(dplyr::tbl(db, clima_name), by = 'idparcela')
-
-  # are there filters??
-  if (!rlang::is_empty(dots)) {
-    res <- res %>%
-      dplyr::filter(!!! dots)
-  }
+    dplyr::left_join(dplyr::tbl(db, clima_name), by = 'idparcela') %>%
+    dplyr::filter(!!! dots)
 
   return(res)
 }
+
 
 #' Core data
 #'
@@ -146,12 +137,10 @@ summarise_polygons <- function(
   ...
 ) {
 
-  # quos
-  dots <- dplyr::quos(...)
-  if (rlang::is_empty(dots)) {
-    dots <- dplyr::quo(TRUE)
-  }
+  # dots
+  dots <- rlang::quos(..., .ignore_empty = 'all')
 
+  # group_by vars
   grouping_vars <- dplyr::quos(
     !!dplyr::sym(polygon_group), !!dplyr::sym(func_group)
   )
