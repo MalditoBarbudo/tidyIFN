@@ -17,86 +17,63 @@ ifn_connect <- function() {
   return(db_conn)
 }
 
-#' Scenario 1 data
+#' SIG data getter
 #'
-#' Load data for scenario 1, plots without breakdown
+#' Function to load the SIG data
 #'
-#' This function generates the core data for scenario 1, plots without breakdown,
-#' meaning the SQL table for plot results ("r_parcela_ifnX")
+#' This function does NOT collect the data from the db, only performs the steps
+#' necessary to retrieve and filter the data if necessary from the db. The
+#' collect step must be performed with the result of the function
 #'
-#' @param data_sig tbl connected to the SQL db with the plot sig info (no collect)
-#' @param ifn character indicating the IFN version to load.
+#' @param ifn character indicating the IFN version to load
 #' @param db database connection
+#' @param ... filter arguments to the dplyr::filter step
 #'
 #' @export
-load_scenario1_data <- function(
-  data_sig, ifn = 'ifn2', db = ifn_connect()
-) {
-  # table name
-  core_name <- glue::glue('r_parcela_{ifn}')
+data_sig <- function(ifn, db = ifn_connect(), ...) {
 
-  # res table, no collect
-  res <- data_sig %>%
-    dplyr::right_join(dplyr::tbl(db, core_name))
+  # enquo the filters
+  dots <- dplyr::enquos(...)
+
+  # sig name
+  name_sig <- glue::glue('parcela{ifn}_sig_etrs89')
+
+  # sig data
+  res <- tbl(db, name_sig)
+
+  # are there filters??
+  if (any(!rlang::quo_is_missing(dots))) {
+    res <- res %>%
+      dplyr::filter(!!! dots)
+  }
 
   return(res)
+
 }
 
-#' Scenario 2 data
+#' Core data
 #'
-#' Load data for scenario 2, plots breakdown by functional group
+#' Function to load the "core" data, data from db tables
 #'
-#' This function generates the core data for scenario 2, plots with breakdown by
-#' functional group, meaning the SQL table for plot and group results
-#' ("r_GROUP_ifnX")
+#' This function takes the result of data_sig to retrieve the core data at the
+#' breakdown level for the plots selected
 #'
-#' @param data_sig tbl connected to the SQL db with the plot sig info (no collect)
-#' @param ifn character indicating the IFN version to load.
-#' @param func_group character indicating the functional group to breakdown the
-#'   plot data.
-#' @param db database connection
-#'
-#' @export
-load_scenario2_data <- function(
-  data_sig, ifn = 'ifn2', func_group = 'especie', db = ifn_connect()
+#' @param data_sig tbl connection, generally the result of data_sig function
+#' @param ifn character indicating the IFN version to load
+#' @param func_group character indicating the breakdown level (parcela, especie,
+#'   especiesimpl, genere, planifconif, caducesclerconif)
+#' @param db db connection
+data_core <- function(
+  data_sig, ifn = 'ifn2', func_group = 'parcela', db = ifn_connect()
 ) {
   # table name
   core_name <- glue::glue('r_{func_group}_{ifn}')
 
   # res table, no collect
   res <- data_sig %>%
-    dplyr::right_join(dplyr::tbl(db, core_name))
+    dplyr::select(idparcela, provincia, vegueria, comarca, municipi) %>%
+    dplyr::left_join(dplyr::tbl(db, core_name), by = 'idparcela')
 
   return(res)
 }
 
-#' Scenario 3 data
-#'
-#' Load data for scenario 3, polygons without breakdown
-#'
-#' This function generates the core data for scenario 3,polygons without
-#' breakdown, meaning the SQL table for plot results ("r_parcela_ifnX"), but
-#' summarised by administrative level
-#'
-#' @param data_sig tbl connected to the SQL db with the plot sig info (no collect)
-#' @param ifn character indicating the IFN version to load.
-#' @param db database connection
-#' @param ... filter expressions (as in dplyr::filter) to filter by dominant
-#'   functional group, useful when using the data for the map visualization
-#'
-#' @export
-load_scenario3_data <- function(
-  data_sig, ifn = 'ifn2', db = ifn_connect(), ...
-) {
-  # enquos for the filters
-  dots <- dplyr::enquo(...)
-
-  # table name
-  core_name <- glue::glue('r_parcela_{ifn}')
-
-  # res table, no collect
-  res <- data_sig %>%
-    dplyr::right_join(dplyr::tbl(db, core_name))
-
-  return(res)
-}
