@@ -15,6 +15,8 @@ test_that("data_sig returns a tbl con", {
   expect_s3_class({
     data_sig(ifn, db, provincia == 'Barcelona', nomxarxa2000 == 'SenseXarxa')
   }, 'tbl_sql')
+
+  pool::poolClose(db)
 })
 
 test_that("data_sig filters really work", {
@@ -38,6 +40,7 @@ test_that("data_sig filters really work", {
       data_sig(ifn, db, provincia == 'Barcelona') %>% collect() %>% nrow()
     }
   )
+  pool::poolClose(db)
 })
 
 test_that("data_clima returns a tbl con", {
@@ -55,6 +58,7 @@ test_that("data_clima returns a tbl con", {
       data_sig, ifn, db, radiacioanual < 1000, temperaturamitjanaanual < 18
     )
   }, 'tbl_sql')
+  pool::poolClose(db)
 })
 
 test_that("data_clima filters work", {
@@ -80,6 +84,7 @@ test_that("data_clima filters work", {
       data_clima(data_sig_filtered, ifn, db) %>% collect() %>% nrow()
     }
   )
+  pool::poolClose(db)
 })
 
 test_that("data_core returns a tbl con", {
@@ -96,4 +101,5 @@ test_that("data_core returns a tbl con", {
         {data_sig %>% pull(idparcela)}
     )
   )
+  pool::poolClose(db)
 })
