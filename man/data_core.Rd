@@ -5,7 +5,7 @@
 \title{Core data}
 \usage{
 data_core(data_sig, ifn = "ifn2", func_group = "parcela",
-  db = ifn_connect())
+  db = ifn_connect(), clima_plots)
 }
 \arguments{
 \item{data_sig}{tbl connection, generally the result of data_sig function}
@@ -16,6 +16,8 @@ data_core(data_sig, ifn = "ifn2", func_group = "parcela",
 especiesimpl, genere, planifconif, caducesclerconif)}
 
 \item{db}{db connection}
+
+\item{clima_plots}{plots resulting from the filtered clima data}
 }
 \description{
 Function to load the "core" data, data from db tables

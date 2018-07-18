@@ -40,16 +40,59 @@ test_that("data_sig filters really work", {
   )
 })
 
-test_that("core_data returns a tbl con", {
+test_that("data_clima returns a tbl con", {
+  ifn <- "ifn3"
+  db <- ifn_connect()
+  data_sig <- data_sig(ifn, db)
+  data_sig_filtered <- data_sig(ifn, db, provincia == 'Barcelona')
+  expect_s3_class(data_clima(data_sig, ifn, db), 'tbl_sql')
+  expect_s3_class(data_clima(data_sig_filtered, ifn, db), 'tbl_sql')
+  expect_s3_class({
+    data_clima(data_sig, ifn, db, radiacioanual < 1000)
+  }, 'tbl_sql')
+  expect_s3_class({
+    data_clima(
+      data_sig, ifn, db, radiacioanual < 1000, temperaturamitjanaanual < 18
+    )
+  }, 'tbl_sql')
+})
+
+test_that("data_clima filters work", {
+  ifn <- "ifn3"
+  db <- ifn_connect()
+  data_sig <- data_sig(ifn, db)
+  data_sig_filtered <- data_sig(ifn, db, provincia == 'Barcelona')
+
+  expect_lt(
+    {
+      data_clima(data_sig, ifn, db, radiacioanual < 1000) %>% collect() %>% nrow()
+    },
+    {
+      data_clima(data_sig, ifn, db) %>% collect() %>% nrow()
+    }
+  )
+
+  expect_lt(
+    {
+      data_clima(data_sig_filtered, ifn, db, radiacioanual < 1000) %>% collect() %>% nrow()
+    },
+    {
+      data_clima(data_sig_filtered, ifn, db) %>% collect() %>% nrow()
+    }
+  )
+})
+
+test_that("data_core returns a tbl con", {
   ifn <- 'ifn3'
   grup_func <- c('parcela', 'genere')
   db <- ifn_connect()
   data_sig <- data_sig(ifn, db)
+  clima_plots <- data_clima(data_sig, ifn, db) %>% pull(idparcela)
 
-  expect_s3_class(data_core(data_sig, ifn, grup_func[1], db), 'tbl_sql')
+  expect_s3_class(data_core(data_sig, ifn, grup_func[1], db, clima_plots), 'tbl_sql')
   expect_true(
     all(
-      {data_core(data_sig, ifn, grup_func[1], db) %>% pull(idparcela)} %in%
+      {data_core(data_sig, ifn, grup_func[1], db, clima_plots) %>% pull(idparcela)} %in%
         {data_sig %>% pull(idparcela)}
     )
   )
