@@ -149,17 +149,20 @@ summarise_polygons <- function(
   # quos
   dots <- dplyr::quos(...)
   if (rlang::is_empty(dots)) {
-    dots <- quo(TRUE)
+    dots <- dplyr::quo(TRUE)
   }
 
-  grouping_vars <- quos(!!sym(polygon_group), !!sym(func_group))
-  grouping_vars <- grouping_vars[vapply(
+  grouping_vars <- dplyr::quos(
+    !!dplyr::sym(polygon_group), !!dplyr::sym(func_group)
+  )
+  grouping_vars <- grouping_vars[!vapply(
     grouping_vars, rlang::quo_is_missing, logical(1)
   )]
 
   res <- data_core %>%
-    dplyr::group_by(!!! group_var) %>%
+    dplyr::group_by(!!! grouping_vars) %>%
     dplyr::filter(!!! dots) %>%
+    dplyr::collect() %>%
     dplyr::summarise_if(is.numeric, .funs = .funs)
 
   return(res)
