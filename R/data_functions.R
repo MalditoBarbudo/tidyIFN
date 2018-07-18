@@ -9,8 +9,8 @@ ifn_connect <- function() {
   db_conn <- pool::dbPool(
     drv = RPostgreSQL::PostgreSQL(),
     user = 'guest',
-    password = rstudioapi::askForPassword('Pasword for IFN db'),
-    dbname = 'ifn',
+    password = 'guest',
+    dbname = 'oracle_ifn',
     idleTimeout = 3600000
   )
 
@@ -33,16 +33,16 @@ ifn_connect <- function() {
 data_sig <- function(ifn, db = ifn_connect(), ...) {
 
   # enquo the filters
-  dots <- dplyr::enquos(...)
+  dots <- dplyr::quos(...)
 
   # sig name
   name_sig <- glue::glue('parcela{ifn}_sig_etrs89')
 
   # sig data
-  res <- tbl(db, name_sig)
+  res <- dplyr::tbl(db, name_sig)
 
   # are there filters??
-  if (any(!rlang::quo_is_missing(dots))) {
+  if (!rlang::is_empty(dots)) {
     res <- res %>%
       dplyr::filter(!!! dots)
   }
