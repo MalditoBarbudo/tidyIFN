@@ -2,7 +2,9 @@ context("data_tests")
 library(dplyr)
 
 test_that("db connection works", {
-  expect_s3_class(ifn_connect(), 'Pool')
+  db <- ifn_connect()
+  expect_s3_class(db, 'Pool')
+  pool::poolClose(db)
 })
 
 test_that("data_sig returns a tbl con", {

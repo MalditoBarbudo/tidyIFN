@@ -2,16 +2,27 @@
 #'
 #' Wrapper of \code{\link{dbPool}} to connect to the IFN database
 #'
-#' There is no arguments, this is used to access as a guest to the database
+#' By default (no arguments supplied) it allows to access as a guest to the
+#' database
+#'
+#' @param user character
+#' @param password character
+#' @param dbname character
+#' @param idleTimeout numeric
 #'
 #' @export
-ifn_connect <- function() {
+ifn_connect <- function(
+  user = 'guest',
+  password = 'guest',
+  dbname = 'oracle_ifn',
+  idleTimeout = 3600000
+) {
   db_conn <- pool::dbPool(
     drv = RPostgreSQL::PostgreSQL(),
-    user = 'guest',
-    password = 'guest',
-    dbname = 'oracle_ifn',
-    idleTimeout = 3600000
+    user = user,
+    password = password,
+    dbname = dbname,
+    idleTimeout = idleTimeout
   )
 
   return(db_conn)

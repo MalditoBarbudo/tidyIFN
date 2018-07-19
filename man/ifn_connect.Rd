@@ -4,11 +4,22 @@
 \alias{ifn_connect}
 \title{Creating a connection to the IFN SQL database}
 \usage{
-ifn_connect()
+ifn_connect(user = "guest", password = "guest", dbname = "oracle_ifn",
+  idleTimeout = 3600000)
+}
+\arguments{
+\item{user}{character}
+
+\item{password}{character}
+
+\item{dbname}{character}
+
+\item{idleTimeout}{numeric}
 }
 \description{
 Wrapper of \code{\link{dbPool}} to connect to the IFN database
 }
 \details{
-There is no arguments, this is used to access as a guest to the database
+By default (no arguments supplied) it allows to access as a guest to the
+database
 }

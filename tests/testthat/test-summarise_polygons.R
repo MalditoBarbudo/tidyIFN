@@ -2,7 +2,7 @@ context("summarise_polygons")
 
 db_con <- ifn_connect()
 sig <- data_sig('ifn3', db_con)
-clima_plots <- sig %>% pull(idparcela)
+clima_plots <- sig %>% dplyr::pull(idparcela)
 core <- data_core(sig, 'ifn3', 'genere', db_con, clima_plots)
 
 test_that("summarise_polygons returns a tbl, not a tbl con", {
@@ -13,3 +13,11 @@ test_that("summarise_polygons returns a tbl, not a tbl con", {
     summarise_polygons(core, 'provincia', 'idgenere'), 'tbl_df'
   )
 })
+
+test_that("number of rows are the correct", {
+  expect_equal(
+    summarise_polygons(core, 'provincia') %>% nrow(), 4
+  )
+})
+
+pool::poolClose(db_con)
