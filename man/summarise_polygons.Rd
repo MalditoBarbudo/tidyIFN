@@ -4,13 +4,15 @@
 \alias{summarise_polygons}
 \title{Summarise the polygons}
 \usage{
-summarise_polygons(data_core, polygon_group, func_group = "",
+summarise_polygons(data_core, ..., polygon_group, func_group = "",
   .funs = dplyr::funs(mean(., na.rm = TRUE), stats::sd(., na.rm = TRUE),
   min(., na.rm = TRUE), max(., na.rm = TRUE), stats::median(., na.rm = TRUE),
-  q95 = stats::quantile(., probs = 0.95, na.rm = TRUE), dplyr::n()), ...)
+  q95 = stats::quantile(., probs = 0.95, na.rm = TRUE), dplyr::n()))
 }
 \arguments{
 \item{data_core}{tbl con, usually obtained from data_core() function}
+
+\item{...}{filter arguments}
 
 \item{polygon_group}{character indicating the polygon group to summarise}
 
@@ -18,8 +20,6 @@ summarise_polygons(data_core, polygon_group, func_group = "",
 if any.}
 
 \item{.funs}{funs (dplyr) object with the functions to summarise}
-
-\item{...}{filter arguments}
 }
 \description{
 Function to summarise variable values for each selected polygon

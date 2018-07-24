@@ -14,7 +14,7 @@
 ifn_connect <- function(
   user = 'guest',
   password = 'guest',
-  dbname = 'oracle_ifn',
+  dbname = 'ifndb',
   idleTimeout = 3600000
 ) {
   db_conn <- pool::dbPool(
@@ -47,7 +47,7 @@ data_sig <- function(ifn, db = ifn_connect(), ...) {
   dots <- rlang::quos(..., .ignore_empty = 'all')
 
   # sig name
-  name_sig <- glue::glue('parcela{ifn}_sig_etrs89')
+  name_sig <- glue::glue('{ifn}_sig')
 
   # sig data
   res <- dplyr::tbl(db, name_sig) %>%
@@ -75,7 +75,7 @@ data_clima <- function(data_sig, ifn, db = ifn_connect(), ...) {
   dots <- rlang::quos(..., .ignore_empty = 'all')
 
   # name
-  clima_name <- glue::glue('parcela{ifn}_clima')
+  clima_name <- glue::glue('{ifn}_clima')
 
   # res
   res <- data_sig %>%
@@ -106,7 +106,7 @@ data_core <- function(
   data_sig, ifn = 'ifn2', func_group = 'parcela', db = ifn_connect(), clima_plots
 ) {
   # table name
-  core_name <- glue::glue('r_{func_group}_{ifn}')
+  core_name <- glue::glue('{ifn}_{func_group}_res')
 
   # res table, no collect
   res <- data_sig %>%
@@ -126,15 +126,17 @@ data_core <- function(
 #' in the case of dominant functional groups
 #'
 #' @param data_core tbl con, usually obtained from data_core() function
+#' @param ... filter arguments
 #' @param polygon_group character indicating the polygon group to summarise
 #' @param func_group character indicating the functional group to also summarise,
 #'   if any.
 #' @param .funs funs (dplyr) object with the functions to summarise
-#' @param ... filter arguments
 #'
 #' @export
 summarise_polygons <- function(
-  data_core, polygon_group,
+  data_core,
+  ...,
+  polygon_group,
   func_group = '',
   .funs = dplyr::funs(
     mean(., na.rm = TRUE),
@@ -144,8 +146,7 @@ summarise_polygons <- function(
     stats::median(., na.rm = TRUE),
     q95 = stats::quantile(., probs = 0.95, na.rm = TRUE),
     dplyr::n()
-  ),
-  ...
+  )
 ) {
 
   # dots

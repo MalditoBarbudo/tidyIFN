@@ -4,7 +4,7 @@
 \alias{ifn_connect}
 \title{Creating a connection to the IFN SQL database}
 \usage{
-ifn_connect(user = "guest", password = "guest", dbname = "oracle_ifn",
+ifn_connect(user = "guest", password = "guest", dbname = "ifndb",
   idleTimeout = 3600000)
 }
 \arguments{
