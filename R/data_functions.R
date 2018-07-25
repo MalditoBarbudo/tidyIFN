@@ -139,18 +139,18 @@ summarise_polygons <- function(
   polygon_group,
   func_group = '',
   .funs = dplyr::funs(
-    mean(., na.rm = TRUE),
-    stats::sd(., na.rm = TRUE),
-    min(., na.rm = TRUE),
-    max(., na.rm = TRUE),
-    stats::median(., na.rm = TRUE),
+    mean = mean(., na.rm = TRUE),
+    sd = stats::sd(., na.rm = TRUE),
+    min = min(., na.rm = TRUE),
+    max = max(., na.rm = TRUE),
+    median = stats::median(., na.rm = TRUE),
     q95 = stats::quantile(., probs = 0.95, na.rm = TRUE),
-    dplyr::n()
+    n = dplyr::n()
   )
 ) {
 
   # dots
-  dots <- rlang::quos(..., .ignore_empty = 'all')
+  dots <- rlang::dots_list(..., .ignore_empty = 'all')
 
   # group_by vars
   grouping_vars <- dplyr::quos(
