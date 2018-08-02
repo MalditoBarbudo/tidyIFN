@@ -103,5 +103,43 @@ test_that("data_core returns a tbl con", {
         {data_sig %>% pull(idparcela)}
     )
   )
+  expect_s3_class(data_core(data_sig, ifn, grup_func[2], db, clima_plots), 'tbl_sql')
+  expect_true(
+    all(
+      {data_core(data_sig, ifn, grup_func[2], db, clima_plots) %>% pull(idparcela)} %in%
+      {data_sig %>% pull(idparcela)}
+    )
+  )
+  pool::poolClose(db)
+})
+
+
+test_that("data_core with diameter_classes TRUE works on", {
+  ifn <- 'ifn3'
+  grup_func <- c('parcela', 'genere')
+  db <- ifn_connect()
+  data_sig <- data_sig(ifn, db)
+  clima_plots <- data_clima(data_sig, ifn, db) %>% pull(idparcela)
+
+  expect_s3_class(
+    data_core(
+      data_sig, ifn, grup_func[1], db, clima_plots, diameter_classes = TRUE
+    ), 'tbl_sql'
+  )
+  expect_true(
+    "idcd" %in% names(data_core(
+      data_sig, ifn, grup_func[1], db, clima_plots, diameter_classes = TRUE
+    ) %>% collect())
+  )
+  expect_s3_class(
+    data_core(
+      data_sig, ifn, grup_func[2], db, clima_plots, diameter_classes = TRUE
+    ), 'tbl_sql'
+  )
+  expect_true(
+    "idcd" %in% names(data_core(
+      data_sig, ifn, grup_func[2], db, clima_plots, diameter_classes = TRUE
+    ) %>% collect())
+  )
   pool::poolClose(db)
 })

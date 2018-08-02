@@ -100,13 +100,28 @@ data_clima <- function(data_sig, ifn, db = ifn_connect(), ...) {
 #'   especiesimpl, genere, planifconif, caducesclerconif)
 #' @param db db connection
 #' @param clima_plots plots resulting from the filtered clima data
+#' @param diameter_classes logical indicating if breakdown the results by
+#'   diameter classes
 #'
 #' @export
 data_core <- function(
-  data_sig, ifn = 'ifn2', func_group = 'parcela', db = ifn_connect(), clima_plots
+  data_sig,
+  ifn = 'ifn2',
+  func_group = 'parcela',
+  db = ifn_connect(),
+  clima_plots,
+  diameter_classes = FALSE
 ) {
+
+  # diameter
+  if (isTRUE(diameter_classes)) {
+    cd <- 'cd_'
+  } else {
+    cd <- ''
+  }
+
   # table name
-  core_name <- glue::glue('{ifn}_{func_group}_res')
+  core_name <- glue::glue('{ifn}_{func_group}_{cd}res')
 
   # res table, no collect
   res <- data_sig %>%
