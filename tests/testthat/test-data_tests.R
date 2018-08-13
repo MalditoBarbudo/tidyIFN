@@ -2,14 +2,14 @@ context("data_tests")
 library(dplyr)
 
 test_that("db connection works", {
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   expect_s3_class(db, 'Pool')
   pool::poolClose(db)
 })
 
 test_that("data_sig returns a tbl con", {
   ifn <- "ifn3"
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   expect_s3_class(data_sig(ifn, db), 'tbl_sql')
   expect_s3_class({
     data_sig(ifn, db, provincia == 'Barcelona')
@@ -23,7 +23,7 @@ test_that("data_sig returns a tbl con", {
 
 test_that("data_sig filters really work", {
   ifn <- "ifn3"
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   expect_lt(
     {
       data_sig(ifn, db, provincia == 'Barcelona') %>% collect() %>% nrow()
@@ -47,7 +47,7 @@ test_that("data_sig filters really work", {
 
 test_that("data_clima returns a tbl con", {
   ifn <- "ifn3"
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   data_sig <- data_sig(ifn, db)
   data_sig_filtered <- data_sig(ifn, db, provincia == 'Barcelona')
   expect_s3_class(data_clima(data_sig, ifn, db), 'tbl_sql')
@@ -65,7 +65,7 @@ test_that("data_clima returns a tbl con", {
 
 test_that("data_clima filters work", {
   ifn <- "ifn3"
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   data_sig <- data_sig(ifn, db)
   data_sig_filtered <- data_sig(ifn, db, provincia == 'Barcelona')
 
@@ -92,7 +92,7 @@ test_that("data_clima filters work", {
 test_that("data_core returns a tbl con", {
   ifn <- 'ifn3'
   grup_func <- c('parcela', 'genere')
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   data_sig <- data_sig(ifn, db)
   clima_plots <- data_clima(data_sig, ifn, db) %>% pull(idparcela)
 
@@ -117,7 +117,7 @@ test_that("data_core returns a tbl con", {
 test_that("data_core with diameter_classes TRUE works on", {
   ifn <- 'ifn3'
   grup_func <- c('parcela', 'genere')
-  db <- ifn_connect()
+  db <- ifn_connect('malditobarbudo')
   data_sig <- data_sig(ifn, db)
   clima_plots <- data_clima(data_sig, ifn, db) %>% pull(idparcela)
 

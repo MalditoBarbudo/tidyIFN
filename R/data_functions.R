@@ -145,6 +145,7 @@ data_core <- function(
 #' @param polygon_group character indicating the polygon group to summarise
 #' @param func_group character indicating the functional group to also summarise,
 #'   if any.
+#' @param cd logical indicating if diameter classes must be considered
 #' @param .funs funs (dplyr) object with the functions to summarise
 #'
 #' @export
@@ -153,6 +154,7 @@ summarise_polygons <- function(
   ...,
   polygon_group,
   func_group = '',
+  cd = FALSE,
   .funs = dplyr::funs(
     mean = mean(., na.rm = TRUE),
     sd = stats::sd(., na.rm = TRUE),
@@ -168,13 +170,22 @@ summarise_polygons <- function(
   dots <- rlang::dots_list(..., .ignore_empty = 'all')
 
   # group_by vars
-  grouping_vars <- dplyr::quos(
-    !!dplyr::sym(polygon_group), !!dplyr::sym(func_group)
-  )
+  if (isTRUE(cd)) {
+    grouping_vars <- dplyr::quos(
+      !!dplyr::sym(polygon_group), !!dplyr::sym(func_group),
+      !!dplyr::sym('idcd')
+    )
+  } else {
+    grouping_vars <- dplyr::quos(
+      !!dplyr::sym(polygon_group), !!dplyr::sym(func_group)
+    )
+  }
+
   grouping_vars <- grouping_vars[!vapply(
     grouping_vars, rlang::quo_is_missing, logical(1)
   )]
 
+  # res
   res <- data_core %>%
     dplyr::group_by(!!! grouping_vars) %>%
     dplyr::filter(!!! dots) %>%

@@ -1,6 +1,6 @@
 context("summarise_polygons")
 
-db_con <- ifn_connect()
+db_con <- ifn_connect('malditobarbudo')
 sig <- data_sig('ifn3', db_con)
 clima_plots <- sig %>% dplyr::pull(idparcela)
 core <- data_core(sig, 'ifn3', 'genere', db_con, clima_plots)
@@ -20,5 +20,7 @@ test_that("number of rows are the correct", {
     summarise_polygons(core, polygon_group = 'provincia') %>% nrow(), 4
   )
 })
+
+#TODO test for idcd!!!!
 
 pool::poolClose(db_con)
