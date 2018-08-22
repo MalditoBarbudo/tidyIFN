@@ -5,10 +5,10 @@
 \title{Summarise the polygons}
 \usage{
 summarise_polygons(data_core, ..., polygon_group, func_group = "",
-  .funs = dplyr::funs(mean = mean(., na.rm = TRUE), sd = stats::sd(., na.rm =
-  TRUE), min = min(., na.rm = TRUE), max = max(., na.rm = TRUE), median =
-  stats::median(., na.rm = TRUE), q95 = stats::quantile(., probs = 0.95, na.rm =
-  TRUE), n = dplyr::n()))
+  cd = FALSE, .funs = dplyr::funs(mean = mean(., na.rm = TRUE), sd =
+  stats::sd(., na.rm = TRUE), min = min(., na.rm = TRUE), max = max(., na.rm =
+  TRUE), median = stats::median(., na.rm = TRUE), q95 = stats::quantile(., probs
+  = 0.95, na.rm = TRUE), n = dplyr::n()))
 }
 \arguments{
 \item{data_core}{tbl con, usually obtained from data_core() function}
@@ -19,6 +19,8 @@ summarise_polygons(data_core, ..., polygon_group, func_group = "",
 
 \item{func_group}{character indicating the functional group to also summarise,
 if any.}
+
+\item{cd}{logical indicating if diameter classes must be considered}
 
 \item{.funs}{funs (dplyr) object with the functions to summarise}
 }

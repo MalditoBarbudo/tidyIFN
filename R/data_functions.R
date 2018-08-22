@@ -40,6 +40,8 @@ ifn_connect <- function(
 #' @param db database connection
 #' @param ... filter arguments to the dplyr::filter step
 #'
+#' @importFrom magrittr %>%
+#'
 #' @export
 data_sig <- function(ifn, db = ifn_connect(), ...) {
 
