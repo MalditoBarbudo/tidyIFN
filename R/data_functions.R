@@ -128,7 +128,7 @@ data_core <- function(
   # res table, no collect
   res <- data_sig %>%
     dplyr::select(
-      idparcela, provincia, delegacio, vegueria, comarca, municipi
+      idparcela, provincia, delegacio, vegueria, comarca, municipi, comunidad
     ) %>%
     dplyr::filter(idparcela %in% clima_plots) %>%
     dplyr::left_join(dplyr::tbl(db, core_name), by = 'idparcela')
