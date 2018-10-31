@@ -1,33 +1,3 @@
-#' Creating a connection to the IFN SQL database
-#'
-#' Wrapper of \code{\link{dbPool}} to connect to the IFN database
-#'
-#' By default (no arguments supplied) it allows to access as a guest to the
-#' database
-#'
-#' @param user character
-#' @param password character
-#' @param dbname character
-#' @param idleTimeout numeric
-#'
-#' @export
-ifn_connect <- function(
-  user = 'guest',
-  password = 'guest',
-  dbname = 'ifndb',
-  idleTimeout = 3600000
-) {
-  db_conn <- pool::dbPool(
-    drv = RPostgreSQL::PostgreSQL(),
-    user = user,
-    password = password,
-    dbname = dbname,
-    idleTimeout = idleTimeout
-  )
-
-  return(db_conn)
-}
-
 #' SIG data getter
 #'
 #' Function to load the SIG data
